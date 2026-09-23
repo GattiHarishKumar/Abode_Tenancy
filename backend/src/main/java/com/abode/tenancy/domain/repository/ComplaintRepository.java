@@ -17,3 +17,4 @@ public interface ComplaintRepository extends JpaRepository<Complaint, UUID> {
     long countByPropertyIdAndStatus(UUID propertyId, ComplaintStatus status);
     long countByPropertyIdAndStatusNot(UUID propertyId, ComplaintStatus status);
 }
+

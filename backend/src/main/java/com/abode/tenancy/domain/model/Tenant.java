@@ -66,3 +66,4 @@ public class Tenant {
     @UpdateTimestamp
     private ZonedDateTime updatedAt;
 }
+

@@ -46,3 +46,4 @@ public class InventoryItem {
     @UpdateTimestamp
     private ZonedDateTime lastUpdated;
 }
+

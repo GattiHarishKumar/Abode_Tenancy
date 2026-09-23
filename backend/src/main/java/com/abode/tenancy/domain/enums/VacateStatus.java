@@ -6,3 +6,4 @@ public enum VacateStatus {
     REJECTED,
     COMPLETED
 }
+

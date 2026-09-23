@@ -36,3 +36,4 @@ public class Bed {
     @CreationTimestamp
     private ZonedDateTime createdAt;
 }
+

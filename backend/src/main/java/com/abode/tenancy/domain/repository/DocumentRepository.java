@@ -12,3 +12,4 @@ public interface DocumentRepository extends JpaRepository<Document, UUID> {
     List<Document> findByTenantId(UUID tenantId);
     List<Document> findByPropertyId(UUID propertyId);
 }
+

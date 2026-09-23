@@ -36,3 +36,4 @@ public interface RentInvoiceRepository extends JpaRepository<RentInvoice, UUID> 
     @Query("SELECT SUM(i.amount - i.paidAmount) FROM RentInvoice i WHERE i.property.id = :propertyId AND i.status = 'OVERDUE'")
     BigDecimal getTotalOverdueRent(@Param("propertyId") UUID propertyId);
 }
+

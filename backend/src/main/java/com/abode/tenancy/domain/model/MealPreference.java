@@ -40,3 +40,4 @@ public class MealPreference {
     @Builder.Default
     private Boolean weekendDinner = true;
 }
+

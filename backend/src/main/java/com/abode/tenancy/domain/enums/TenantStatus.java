@@ -5,3 +5,4 @@ public enum TenantStatus {
     ON_NOTICE,
     VACATED
 }
+

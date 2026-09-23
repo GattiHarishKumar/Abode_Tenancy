@@ -47,3 +47,4 @@ public class Visitor {
     @CreationTimestamp
     private ZonedDateTime createdAt;
 }
+

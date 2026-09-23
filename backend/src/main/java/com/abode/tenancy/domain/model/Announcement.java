@@ -46,3 +46,4 @@ public class Announcement {
     @CreationTimestamp
     private ZonedDateTime createdAt;
 }
+

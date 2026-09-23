@@ -14,3 +14,4 @@ public class AbodeTenancyApplication {
         SpringApplication.run(AbodeTenancyApplication.class, args);
     }
 }
+

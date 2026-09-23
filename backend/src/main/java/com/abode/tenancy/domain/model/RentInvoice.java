@@ -59,3 +59,4 @@ public class RentInvoice {
     @CreationTimestamp
     private ZonedDateTime createdAt;
 }
+

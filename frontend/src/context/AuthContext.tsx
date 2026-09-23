@@ -69,6 +69,27 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  // Auto-resolve propertyId if user is authenticated but propertyId is not stored
+  useEffect(() => {
+    const resolveMissingProperty = async () => {
+      if (token && !propertyId && user) {
+        try {
+          if (user.role === 'OWNER' || user.role === 'SUPER_ADMIN') {
+            const res = await api.get('/properties');
+            if (res.data.success && res.data.data && res.data.data.length > 0) {
+              const pId = res.data.data[0].id;
+              setPropertyId(pId);
+              localStorage.setItem('abode_property_id', pId);
+            }
+          }
+        } catch (err) {
+          console.error('Failed to auto-resolve propertyId', err);
+        }
+      }
+    };
+    resolveMissingProperty();
+  }, [token, propertyId, user]);
+
   const login = async (identifier: string, password: string) => {
     setLoading(true);
     try {
@@ -152,4 +173,3 @@ export const useAuth = () => {
   }
   return context;
 };
-

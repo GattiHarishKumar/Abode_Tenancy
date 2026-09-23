@@ -65,3 +65,4 @@ public class Payment {
     @CreationTimestamp
     private ZonedDateTime createdAt;
 }
+

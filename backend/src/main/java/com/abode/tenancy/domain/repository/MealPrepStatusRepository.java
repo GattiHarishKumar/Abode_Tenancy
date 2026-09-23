@@ -15,3 +15,4 @@ public interface MealPrepStatusRepository extends JpaRepository<MealPrepStatus, 
     Optional<MealPrepStatus> findByPropertyIdAndDateAndMealType(UUID propertyId, LocalDate date, MealType mealType);
     List<MealPrepStatus> findByPropertyIdAndDate(UUID propertyId, LocalDate date);
 }
+

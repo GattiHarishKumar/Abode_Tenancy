@@ -46,3 +46,4 @@ public class FoodWasteEntry {
     @CreationTimestamp
     private ZonedDateTime createdAt;
 }
+

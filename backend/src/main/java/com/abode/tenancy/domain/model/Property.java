@@ -70,6 +70,11 @@ public class Property {
     @Builder.Default
     private BigDecimal referralReward = new BigDecimal("500.00");
 
+    @Builder.Default
+    private String upiId = "srisaipg@okhdfcbank";
+
+    private String upiQrUrl;
+
     @OneToMany(mappedBy = "property", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<PropertyPhoto> photos = new ArrayList<>();
@@ -92,3 +97,4 @@ public class Property {
     @UpdateTimestamp
     private ZonedDateTime updatedAt;
 }
+

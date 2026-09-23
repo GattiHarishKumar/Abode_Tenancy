@@ -14,3 +14,4 @@ public interface PropertyRepository extends JpaRepository<Property, UUID> {
     Optional<Property> findBySlug(String slug);
     boolean existsBySlug(String slug);
 }
+

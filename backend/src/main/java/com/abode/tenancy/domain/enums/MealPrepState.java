@@ -6,3 +6,4 @@ public enum MealPrepState {
     READY,
     COMPLETED
 }
+

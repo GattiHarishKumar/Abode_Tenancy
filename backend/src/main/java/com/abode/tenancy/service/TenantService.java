@@ -148,6 +148,14 @@ public class TenantService {
                     .build());
         });
 
+        BigDecimal totalOutstanding = invoices.stream()
+                .filter(i -> i.getStatus() != RentStatus.PAID)
+                .map(i -> i.getAmount().subtract(i.getPaidAmount() != null ? i.getPaidAmount() : BigDecimal.ZERO))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        String propertyUpi = tenant.getProperty() != null && tenant.getProperty().getUpiId() != null 
+                ? tenant.getProperty().getUpiId() : "srisaipg@okhdfcbank";
+
         return TenantDto.Profile360.builder()
                 .id(tenant.getId())
                 .userId(tenant.getUser().getId())
@@ -166,6 +174,8 @@ public class TenantService {
                 .vacatingDate(tenant.getVacatingDate())
                 .rentAmount(tenant.getRentAmount())
                 .depositAmount(tenant.getDepositAmount())
+                .totalOutstandingBalance(totalOutstanding)
+                .upiId(propertyUpi)
                 .status(tenant.getStatus())
                 .emergencyContactName(tenant.getEmergencyContactName())
                 .emergencyContactPhone(tenant.getEmergencyContactPhone())
@@ -185,7 +195,8 @@ public class TenantService {
         Room room = roomRepository.findById(request.getRoomId())
                 .orElseThrow(() -> new IllegalArgumentException("Room not found"));
 
-        Bed bed = bedRepository.findById(request.getBedId())
+        // Pessimistic write lock on bed to prevent concurrent double-booking
+        Bed bed = bedRepository.findByIdWithLock(request.getBedId())
                 .orElseThrow(() -> new IllegalArgumentException("Bed not found"));
 
         if (bed.getStatus() == BedStatus.OCCUPIED) {
@@ -273,7 +284,9 @@ public class TenantService {
 
         Room newRoom = roomRepository.findById(request.getNewRoomId())
                 .orElseThrow(() -> new IllegalArgumentException("New room not found"));
-        Bed newBed = bedRepository.findById(request.getNewBedId())
+
+        // Pessimistic write lock on target bed
+        Bed newBed = bedRepository.findByIdWithLock(request.getNewBedId())
                 .orElseThrow(() -> new IllegalArgumentException("New bed not found"));
 
         if (newBed.getStatus() == BedStatus.OCCUPIED) {
@@ -346,8 +359,26 @@ public class TenantService {
 
         BigDecimal totalDeductions = paintingDeduction.add(unpaidDues).add(damageDeductions);
         BigDecimal netRefund = depositHeld.subtract(totalDeductions);
+        BigDecimal shortfall = BigDecimal.ZERO;
+
         if (netRefund.compareTo(BigDecimal.ZERO) < 0) {
+            shortfall = totalDeductions.subtract(depositHeld);
             netRefund = BigDecimal.ZERO;
+
+            // Automatically generate a move-out recovery invoice for the tenant deficit
+            String curMonth = String.format("%d-%02d", LocalDate.now().getYear(), LocalDate.now().getMonthValue());
+            RentInvoice shortfallInvoice = RentInvoice.builder()
+                    .property(tenant.getProperty())
+                    .tenant(tenant)
+                    .invoiceNumber("SETTLE-SHORTFALL-" + curMonth + "-" + (int)(Math.random() * 900 + 100))
+                    .monthYear(curMonth)
+                    .amount(shortfall)
+                    .discountAmount(BigDecimal.ZERO)
+                    .dueDate(LocalDate.now().plusDays(7))
+                    .status(RentStatus.PENDING)
+                    .paidAmount(BigDecimal.ZERO)
+                    .build();
+            rentInvoiceRepository.save(shortfallInvoice);
         }
 
         // Vacate bed and mark tenant as vacated
@@ -369,7 +400,7 @@ public class TenantService {
         }
 
         auditService.log(tenant.getProperty().getId(), tenant.getUser().getId(), "SETTLEMENT", "Tenant", tenant.getId().toString(),
-                "Settled security deposit for " + tenant.getUser().getFullName() + ". Refund: ₹" + netRefund + " (Deductions: ₹" + totalDeductions + ")");
+                "Settled security deposit for " + tenant.getUser().getFullName() + ". Refund: ₹" + netRefund + " (Deductions: ₹" + totalDeductions + ", Shortfall: ₹" + shortfall + ")");
 
         return TenantDto.SettlementResponse.builder()
                 .tenantId(tenant.getId())
@@ -377,6 +408,7 @@ public class TenantService {
                 .depositHeld(depositHeld)
                 .totalDeductions(totalDeductions)
                 .netRefundAmount(netRefund)
+                .shortfallAmount(shortfall)
                 .settlementDate(LocalDate.now().toString())
                 .status("SETTLED")
                 .notes(request.getDeductionNotes() != null ? request.getDeductionNotes() : "Standard move-out settlement completed.")

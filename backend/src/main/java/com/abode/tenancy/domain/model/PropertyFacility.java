@@ -30,3 +30,4 @@ public class PropertyFacility {
     @Builder.Default
     private Boolean isAvailable = true;
 }
+

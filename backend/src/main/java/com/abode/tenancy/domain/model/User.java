@@ -55,3 +55,4 @@ public class User {
     @UpdateTimestamp
     private ZonedDateTime updatedAt;
 }
+

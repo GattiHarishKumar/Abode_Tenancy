@@ -43,3 +43,4 @@ public class ApplicationController {
         return ResponseEntity.ok(ApiResponse.success("Application status updated to " + request.getStatus()));
     }
 }
+

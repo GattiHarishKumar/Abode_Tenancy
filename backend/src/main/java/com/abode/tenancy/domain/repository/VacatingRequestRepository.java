@@ -16,3 +16,4 @@ public interface VacatingRequestRepository extends JpaRepository<VacatingRequest
     Optional<VacatingRequest> findByTenantIdAndStatus(UUID tenantId, VacateStatus status);
     long countByPropertyIdAndStatus(UUID propertyId, VacateStatus status);
 }
+

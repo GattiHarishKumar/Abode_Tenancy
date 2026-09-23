@@ -38,3 +38,4 @@ public class PropertyPhoto {
     @CreationTimestamp
     private ZonedDateTime createdAt;
 }
+

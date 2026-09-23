@@ -33,6 +33,7 @@ public class DataSeeder implements CommandLineRunner {
     private final MealConfirmationRepository mealConfirmationRepository;
     private final MealPrepStatusRepository mealPrepStatusRepository;
     private final MealPreferenceRepository mealPreferenceRepository;
+    private final FoodWasteEntryRepository foodWasteEntryRepository;
     private final RentInvoiceRepository rentInvoiceRepository;
     private final PaymentRepository paymentRepository;
     private final ComplaintRepository complaintRepository;
@@ -43,16 +44,16 @@ public class DataSeeder implements CommandLineRunner {
     @Override
     @Transactional
     public void run(String... args) {
-        if (userRepository.existsByPhone("9876543210")) {
+        if (userRepository.existsByPhone("9876543210") && userRepository.existsByPhone("9845011223")) {
             log.info("Database already seeded with demo data.");
             return;
         }
 
-        log.info("Starting Abode Tenancy demo data seeding...");
+        log.info("Starting Abode Tenancy comprehensive SaaS demo data seeding...");
 
-        // 1. Create Super Admin & Owner
-        User owner = User.builder()
-                .fullName("Harish Kumar")
+        // 1. Create Primary Owner (Supports both 9876543210 and 9845011223)
+        User owner1 = User.builder()
+                .fullName("Harish Kumar (Property Owner)")
                 .phone("9876543210")
                 .email("harish@srisaipg.com")
                 .passwordHash(passwordEncoder.encode("Owner@123"))
@@ -61,11 +62,23 @@ public class DataSeeder implements CommandLineRunner {
                 .languagePreference("en")
                 .avatarUrl("https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150")
                 .build();
-        owner = userRepository.save(owner);
+        owner1 = userRepository.save(owner1);
 
-        // 2. Create Cook
-        User cook = User.builder()
-                .fullName("Ramesh Cook")
+        User owner2 = User.builder()
+                .fullName("Harish Kumar (HQ Admin)")
+                .phone("9845011223")
+                .email("owner@srisaipg.com")
+                .passwordHash(passwordEncoder.encode("Admin@123"))
+                .role(Role.OWNER)
+                .status(UserStatus.ACTIVE)
+                .languagePreference("en")
+                .avatarUrl("https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150")
+                .build();
+        owner2 = userRepository.save(owner2);
+
+        // 2. Create Cooks
+        User cook1 = User.builder()
+                .fullName("Ramesh Cook (Head Chef)")
                 .phone("9876543211")
                 .email("ramesh.cook@srisaipg.com")
                 .passwordHash(passwordEncoder.encode("Cook@123"))
@@ -74,11 +87,23 @@ public class DataSeeder implements CommandLineRunner {
                 .languagePreference("te")
                 .avatarUrl("https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=150")
                 .build();
-        cook = userRepository.save(cook);
+        cook1 = userRepository.save(cook1);
 
-        // 3. Create Primary Property: Sri Sai PG
+        User cook2 = User.builder()
+                .fullName("Shankar Cook (Sous Chef)")
+                .phone("9845011225")
+                .email("cook@srisaipg.com")
+                .passwordHash(passwordEncoder.encode("Cook@123"))
+                .role(Role.COOK)
+                .status(UserStatus.ACTIVE)
+                .languagePreference("en")
+                .avatarUrl("https://images.unsplash.com/photo-1583394838336-acd977736f90?w=150")
+                .build();
+        cook2 = userRepository.save(cook2);
+
+        // 3. Create Primary Property: Sri Sai PG for Men
         Property property = Property.builder()
-                .owner(owner)
+                .owner(owner1)
                 .name("Sri Sai PG for Men")
                 .slug("sri-sai-pg-marathahalli")
                 .address("#42, 3rd Cross, AECS Layout, Marathahalli")
@@ -88,7 +113,7 @@ public class DataSeeder implements CommandLineRunner {
                 .genderAllowed("MEN")
                 .contactPhone("9876543210")
                 .contactEmail("contact@srisaipg.com")
-                .description("Premium Luxury PG for Men located in the heart of Marathahalli with high-speed Wi-Fi, 3 times hygienic food, daily housekeeping, and 24/7 security.")
+                .description("Premium Luxury PG for Men located in the heart of Marathahalli with high-speed 300 Mbps Wi-Fi, 3 times hygienic homely food, daily housekeeping, 24/7 solar hot water, and keycard security.")
                 .rules("1. Visitors allowed in lobby until 9:00 PM.\n2. No smoking or alcohol in PG premises.\n3. Dinner served between 7:30 PM - 9:30 PM.\n4. 30 days notice period required before vacating.")
                 .noticePeriodDays(30)
                 .defaultDeposit(new BigDecimal("10000.00"))
@@ -96,23 +121,23 @@ public class DataSeeder implements CommandLineRunner {
                 .build();
 
         // Add facilities
-        property.getFacilities().add(PropertyFacility.builder().property(property).facilityName("High-Speed Wi-Fi").icon("Wifi").isAvailable(true).build());
-        property.getFacilities().add(PropertyFacility.builder().property(property).facilityName("3x Hygienic Food").icon("Utensils").isAvailable(true).build());
-        property.getFacilities().add(PropertyFacility.builder().property(property).facilityName("Daily Housekeeping").icon("Sparkles").isAvailable(true).build());
+        property.getFacilities().add(PropertyFacility.builder().property(property).facilityName("High-Speed Wi-Fi (300 Mbps)").icon("Wifi").isAvailable(true).build());
+        property.getFacilities().add(PropertyFacility.builder().property(property).facilityName("3x Hygienic Homely Food").icon("Utensils").isAvailable(true).build());
+        property.getFacilities().add(PropertyFacility.builder().property(property).facilityName("Daily Room Cleaning").icon("Sparkles").isAvailable(true).build());
         property.getFacilities().add(PropertyFacility.builder().property(property).facilityName("Automatic Washing Machines").icon("Shirt").isAvailable(true).build());
         property.getFacilities().add(PropertyFacility.builder().property(property).facilityName("24/7 Hot Water (Solar & Geyser)").icon("Flame").isAvailable(true).build());
-        property.getFacilities().add(PropertyFacility.builder().property(property).facilityName("Power Backup").icon("Zap").isAvailable(true).build());
+        property.getFacilities().add(PropertyFacility.builder().property(property).facilityName("Power Backup (Silent Gen)").icon("Zap").isAvailable(true).build());
         property.getFacilities().add(PropertyFacility.builder().property(property).facilityName("CCTV & Security Guard").icon("ShieldCheck").isAvailable(true).build());
-        property.getFacilities().add(PropertyFacility.builder().property(property).facilityName("Two Wheeler Parking").icon("Bike").isAvailable(true).build());
+        property.getFacilities().add(PropertyFacility.builder().property(property).facilityName("Covered Two-Wheeler Parking").icon("Bike").isAvailable(true).build());
 
-        // Add Pricing
+        // Add Pricing tiers
         property.getPricing().add(PropertyPricing.builder().property(property).sharingType(1).monthlyRent(new BigDecimal("18000.00")).depositAmount(new BigDecimal("20000.00")).description("Private Room with Attached Bath & Balcony").build());
         property.getPricing().add(PropertyPricing.builder().property(property).sharingType(2).monthlyRent(new BigDecimal("12000.00")).depositAmount(new BigDecimal("15000.00")).description("Spacious 2-Sharing with Attached Bathroom").build());
         property.getPricing().add(PropertyPricing.builder().property(property).sharingType(3).monthlyRent(new BigDecimal("9500.00")).depositAmount(new BigDecimal("10000.00")).description("Budget Friendly 3-Sharing Room").build());
         property.getPricing().add(PropertyPricing.builder().property(property).sharingType(4).monthlyRent(new BigDecimal("8000.00")).depositAmount(new BigDecimal("10000.00")).description("Standard 4-Sharing Room").build());
 
         // Add FAQs
-        property.getFaqs().add(PropertyFaq.builder().property(property).question("Is 3 times food included in the monthly rent?").answer("Yes, breakfast, lunch, and dinner with veg and non-veg options are included.").sortOrder(1).build());
+        property.getFaqs().add(PropertyFaq.builder().property(property).question("Is 3 times food included in the monthly rent?").answer("Yes, breakfast, lunch, and dinner with South & North Indian varieties are included.").sortOrder(1).build());
         property.getFaqs().add(PropertyFaq.builder().property(property).question("What is the security deposit and refund policy?").answer("Security deposit is equal to one month rent and is refundable upon 30-day notice.").sortOrder(2).build());
         property.getFaqs().add(PropertyFaq.builder().property(property).question("Are visitors allowed?").answer("Visitors are allowed in the common reception lounge until 9:00 PM.").sortOrder(3).build());
 
@@ -123,30 +148,41 @@ public class DataSeeder implements CommandLineRunner {
 
         property = propertyRepository.save(property);
 
-        // Link Cook as Staff
-        StaffMember cookStaff = StaffMember.builder()
+        // Staff mappings for both cooks
+        StaffMember cookStaff1 = StaffMember.builder()
                 .property(property)
-                .user(cook)
+                .user(cook1)
                 .designation("Head Cook")
                 .permissionsJson("[\"VIEW_MEAL_COUNTS\", \"UPDATE_MEAL_STATUS\", \"VIEW_MENU\", \"RECORD_WASTE\"]")
                 .isActive(true)
                 .build();
-        staffMemberRepository.save(cookStaff);
+        staffMemberRepository.save(cookStaff1);
 
-        // 4. Create Rooms and Beds
-        // Floor 1 (101-106)
-        // Floor 2 (201-206)
-        // Floor 3 (301-306)
+        StaffMember cookStaff2 = StaffMember.builder()
+                .property(property)
+                .user(cook2)
+                .designation("Head Cook")
+                .permissionsJson("[\"VIEW_MEAL_COUNTS\", \"UPDATE_MEAL_STATUS\", \"VIEW_MENU\", \"RECORD_WASTE\"]")
+                .isActive(true)
+                .build();
+        staffMemberRepository.save(cookStaff2);
+
+        // 4. Create Rooms and Beds across 3 Floors
         List<Room> createdRooms = new ArrayList<>();
         int[] roomNumbers = {101, 102, 103, 104, 105, 106, 201, 202, 203, 204, 205, 206, 301, 302, 303, 304, 305, 306};
 
         for (int rNum : roomNumbers) {
             int floor = rNum / 100;
             int sharing = (rNum % 3 == 0) ? 2 : (rNum % 2 == 0) ? 3 : 4;
-            BigDecimal rent = sharing == 2 ? new BigDecimal("12000.00") : sharing == 3 ? new BigDecimal("9500.00") : new BigDecimal("8000.00");
+            if (rNum == 101 || rNum == 301) sharing = 1;
+
+            BigDecimal rent = sharing == 1 ? new BigDecimal("18000.00") :
+                              sharing == 2 ? new BigDecimal("12000.00") :
+                              sharing == 3 ? new BigDecimal("9500.00") : new BigDecimal("8000.00");
+
             boolean isAc = (rNum % 2 == 1);
             boolean hasBalcony = (rNum % 3 == 0);
-            boolean isCleaned = (rNum != 104 && rNum != 205);
+            boolean isCleaned = (rNum != 104 && rNum != 205 && rNum != 303);
 
             Room room = Room.builder()
                     .property(property)
@@ -158,7 +194,7 @@ public class DataSeeder implements CommandLineRunner {
                     .hasBalcony(hasBalcony)
                     .hasAttachedWashroom(true)
                     .isCleanedToday(isCleaned)
-                    .lastCleanedAt(isCleaned ? java.time.ZonedDateTime.now().minusHours(2) : null)
+                    .lastCleanedAt(isCleaned ? ZonedDateTime.now().minusHours(2) : null)
                     .status(RoomStatus.AVAILABLE)
                     .build();
             room = roomRepository.save(room);
@@ -176,9 +212,9 @@ public class DataSeeder implements CommandLineRunner {
             createdRooms.add(room);
         }
 
-        // 5. Create Key Demo Tenants
-        // Tenant 1: Rahul Kumar (Room 204, Bed A, Rent Paid)
-        User rahulUser = User.builder()
+        // 5. Create Primary Demo Tenants
+        // Tenant 1: Rahul Kumar (Room 204, Bed A) - Accessible via 9876543212 and 9845011224
+        User rahulUser1 = User.builder()
                 .fullName("Rahul Kumar")
                 .phone("9876543212")
                 .email("rahul.k@gmail.com")
@@ -188,7 +224,19 @@ public class DataSeeder implements CommandLineRunner {
                 .languagePreference("en")
                 .avatarUrl("https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150")
                 .build();
-        rahulUser = userRepository.save(rahulUser);
+        rahulUser1 = userRepository.save(rahulUser1);
+
+        User rahulUser2 = User.builder()
+                .fullName("Rahul Kumar (Resident)")
+                .phone("9845011224")
+                .email("tenant@srisaipg.com")
+                .passwordHash(passwordEncoder.encode("Tenant@123"))
+                .role(Role.TENANT)
+                .status(UserStatus.ACTIVE)
+                .languagePreference("en")
+                .avatarUrl("https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150")
+                .build();
+        rahulUser2 = userRepository.save(rahulUser2);
 
         Room room204 = createdRooms.stream().filter(r -> r.getRoomNumber().equals("204")).findFirst().get();
         Bed bed204A = room204.getBeds().get(0);
@@ -196,7 +244,7 @@ public class DataSeeder implements CommandLineRunner {
         bedRepository.save(bed204A);
 
         Tenant rahulTenant = Tenant.builder()
-                .user(rahulUser)
+                .user(rahulUser1)
                 .property(property)
                 .room(room204)
                 .bed(bed204A)
@@ -209,6 +257,27 @@ public class DataSeeder implements CommandLineRunner {
                 .build();
         rahulTenant = tenantRepository.save(rahulTenant);
 
+        Room room205 = createdRooms.stream().filter(r -> r.getRoomNumber().equals("205")).findFirst().get();
+        Bed bed205A = room205.getBeds().get(0);
+        bed205A.setStatus(BedStatus.OCCUPIED);
+        bedRepository.save(bed205A);
+
+        Tenant rahulTenant2 = Tenant.builder()
+                .user(rahulUser2)
+                .property(property)
+                .room(room205)
+                .bed(bed205A)
+                .joiningDate(LocalDate.now().minusMonths(6))
+                .rentAmount(new BigDecimal("9500.00"))
+                .depositAmount(new BigDecimal("10000.00"))
+                .emergencyContactName("Sunil Kumar (Father)")
+                .emergencyContactPhone("9811223344")
+                .status(TenantStatus.ACTIVE)
+                .build();
+        rahulTenant2 = tenantRepository.save(rahulTenant2);
+        room205.setStatus(RoomStatus.PARTIALLY_OCCUPIED);
+        roomRepository.save(room205);
+
         MealPreference rahulPref = MealPreference.builder()
                 .tenant(rahulTenant)
                 .weekdayBreakfast(false)
@@ -220,7 +289,18 @@ public class DataSeeder implements CommandLineRunner {
                 .build();
         mealPreferenceRepository.save(rahulPref);
 
-        // Tenant 2: Kiran Reddy (Room 204, Bed B, Rent Pending)
+        MealPreference rahulPref2 = MealPreference.builder()
+                .tenant(rahulTenant2)
+                .weekdayBreakfast(false)
+                .weekdayLunch(true)
+                .weekdayDinner(true)
+                .weekendBreakfast(true)
+                .weekendLunch(true)
+                .weekendDinner(true)
+                .build();
+        mealPreferenceRepository.save(rahulPref2);
+
+        // Tenant 2: Kiran Reddy (Room 204, Bed B - On Notice Period)
         User kiranUser = User.builder()
                 .fullName("Kiran Reddy")
                 .phone("9876543213")
@@ -243,7 +323,7 @@ public class DataSeeder implements CommandLineRunner {
                 .room(room204)
                 .bed(bed204B)
                 .joiningDate(LocalDate.now().minusMonths(2))
-                .vacatingDate(LocalDate.now().plusDays(8))
+                .vacatingDate(LocalDate.now().plusDays(12))
                 .rentAmount(new BigDecimal("9500.00"))
                 .depositAmount(new BigDecimal("10000.00"))
                 .emergencyContactName("Venkatesh Reddy (Brother)")
@@ -255,22 +335,25 @@ public class DataSeeder implements CommandLineRunner {
         room204.setStatus(RoomStatus.PARTIALLY_OCCUPIED);
         roomRepository.save(room204);
 
-        // Populate additional tenants to reach realistic ~42 occupied rooms & ~86 tenants
+        // Populate additional tenants to reach realistic ~38 occupied beds & active roster
         int tenantCount = 3;
         String[] sampleNames = {"Ajay Sharma", "Vikram Singh", "Suresh Nair", "Manoj Gupta", "Anand Rao",
                 "Deepak Patel", "Rohan Mehta", "Gautam Verma", "Siddharth Das", "Pradeep Joshi",
-                "Arjun Nair", "Karthik Iyer", "Varun Teja", "Naveen Babu", "Rakesh Goud", "Manish Tiwari"};
+                "Arjun Nair", "Karthik Iyer", "Varun Teja", "Naveen Babu", "Rakesh Goud", "Manish Tiwari",
+                "Praveen Reddy", "Sanjay Hegde", "Vivek Menon", "Abhishek Sen"};
 
         for (Room r : createdRooms) {
-            if (r.getRoomNumber().equals("204")) continue;
+            if (r.getRoomNumber().equals("204") || r.getRoomNumber().equals("205")) continue;
 
-            int toOccupy = r.getRoomNumber().equals("101") || r.getRoomNumber().equals("202") || r.getRoomNumber().equals("306") ? 0 : r.getBeds().size();
+            // Keep room 101, 202, 306 vacant for walk-ins & live UI allocation tests
+            int toOccupy = (r.getRoomNumber().equals("101") || r.getRoomNumber().equals("202") || r.getRoomNumber().equals("306")) ? 0 : r.getBeds().size();
+
             for (int b = 0; b < toOccupy; b++) {
                 Bed currentBed = r.getBeds().get(b);
                 currentBed.setStatus(BedStatus.OCCUPIED);
                 bedRepository.save(currentBed);
 
-                String name = sampleNames[tenantCount % sampleNames.length] + " " + tenantCount;
+                String name = sampleNames[tenantCount % sampleNames.length];
                 String phone = String.format("981100%04d", tenantCount);
 
                 User tUser = User.builder()
@@ -288,9 +371,11 @@ public class DataSeeder implements CommandLineRunner {
                         .property(property)
                         .room(r)
                         .bed(currentBed)
-                        .joiningDate(LocalDate.now().minusMonths(tenantCount % 12 + 1))
+                        .joiningDate(LocalDate.now().minusMonths(tenantCount % 10 + 1))
                         .rentAmount(r.getBaseRent())
                         .depositAmount(new BigDecimal("10000.00"))
+                        .emergencyContactName("Guardian (" + name.split(" ")[0] + ")")
+                        .emergencyContactPhone("989900" + String.format("%04d", tenantCount))
                         .status(TenantStatus.ACTIVE)
                         .build();
                 t = tenantRepository.save(t);
@@ -303,35 +388,67 @@ public class DataSeeder implements CommandLineRunner {
             roomRepository.save(r);
         }
 
-        // 6. Create Menu for Today & Tomorrow
+        // 6. Create Rotating Weekly Menus (Today, Yesterday, Tomorrow)
         LocalDate today = LocalDate.now();
-        Menu todayMenu = Menu.builder()
-                .property(property)
-                .menuDate(today)
-                .breakfastItems("Idli, Medu Vada, Sambar, Coconut Chutney, Tea / Coffee")
-                .breakfastStart("08:00")
-                .breakfastEnd("10:00")
-                .lunchItems("Steamed Rice, Dal Tadka, Aloo Gobi Masala, Curd, Roasted Papad")
-                .lunchStart("12:30")
-                .lunchEnd("14:30")
-                .dinnerItems("Phulka Rotis (unlimited), Paneer Butter Masala, Jeera Rice, Dal Fry, Salad")
-                .dinnerStart("19:30")
-                .dinnerEnd("21:30")
-                .isPublished(true)
-                .build();
-        menuRepository.save(todayMenu);
+        for (int i = -2; i <= 4; i++) {
+            LocalDate mDate = today.plusDays(i);
+            int dayOfWeek = mDate.getDayOfWeek().getValue();
 
-        // Prep status for today
-        mealPrepStatusRepository.save(MealPrepStatus.builder().property(property).date(today).mealType(MealType.BREAKFAST).status(MealPrepState.COMPLETED).preparedCount(62).build());
-        mealPrepStatusRepository.save(MealPrepStatus.builder().property(property).date(today).mealType(MealType.LUNCH).status(MealPrepState.READY).preparedCount(71).build());
-        mealPrepStatusRepository.save(MealPrepStatus.builder().property(property).date(today).mealType(MealType.DINNER).status(MealPrepState.IN_PREPARATION).preparedCount(66).build());
+            String bItems = dayOfWeek == 7 ? "Masala Dosa, Sambar, Coconut & Tomato Chutney, Filter Coffee" :
+                            dayOfWeek == 6 ? "Puri Bhaji, Kesari Bath, Tea / Coffee" :
+                            dayOfWeek == 3 ? "Aloo Paratha with Curd, Pickle, Tea / Coffee" :
+                            "Idli, Medu Vada, Sambar, Coconut Chutney, Tea / Coffee";
+
+            String lItems = dayOfWeek == 7 ? "Chicken Biryani / Paneer Biryani, Mirchi Ka Salan, Raita, Gulab Jamun" :
+                            dayOfWeek == 3 ? "Steamed Sona Masoori Rice, Dal Makhani, Bhindi Fry, Curd, Papad" :
+                            "Steamed Rice, Dal Tadka, Aloo Gobi Masala, Curd, Roasted Papad";
+
+            String dItems = dayOfWeek == 7 ? "Hot Phulkas, Egg Curry / Paneer Butter Masala, Jeera Rice, Salad" :
+                            dayOfWeek == 5 ? "Phulka Rotis, Mix Veg Kurma, Veg Pulao, Dal Fry, Raita" :
+                            "Phulka Rotis (Unlimited), Paneer Butter Masala, Jeera Rice, Dal Fry, Salad";
+
+            Menu menu = Menu.builder()
+                    .property(property)
+                    .menuDate(mDate)
+                    .breakfastItems(bItems)
+                    .breakfastStart("08:00")
+                    .breakfastEnd("10:00")
+                    .lunchItems(lItems)
+                    .lunchStart("12:30")
+                    .lunchEnd("14:30")
+                    .dinnerItems(dItems)
+                    .dinnerStart("19:30")
+                    .dinnerEnd("21:30")
+                    .isPublished(true)
+                    .build();
+            menuRepository.save(menu);
+        }
+
+        // Meal preparation states for today
+        mealPrepStatusRepository.save(MealPrepStatus.builder().property(property).date(today).mealType(MealType.BREAKFAST).status(MealPrepState.COMPLETED).preparedCount(36).build());
+        mealPrepStatusRepository.save(MealPrepStatus.builder().property(property).date(today).mealType(MealType.LUNCH).status(MealPrepState.READY).preparedCount(34).build());
+        mealPrepStatusRepository.save(MealPrepStatus.builder().property(property).date(today).mealType(MealType.DINNER).status(MealPrepState.IN_PREPARATION).preparedCount(38).build());
+
+        // Food waste log entry for previous day
+        foodWasteEntryRepository.save(FoodWasteEntry.builder()
+                .property(property)
+                .date(today.minusDays(1))
+                .mealType(MealType.LUNCH)
+                .leftoverKg(new BigDecimal("0.8"))
+                .enteredBy(cook1)
+                .reason("Rice finished completely. ~0.8kg dal left over.")
+                .build());
 
         // Meal Confirmations for Rahul
         mealConfirmationRepository.save(MealConfirmation.builder().tenant(rahulTenant).property(property).date(today).mealType(MealType.BREAKFAST).isAttending(true).build());
         mealConfirmationRepository.save(MealConfirmation.builder().tenant(rahulTenant).property(property).date(today).mealType(MealType.LUNCH).isAttending(false).build());
         mealConfirmationRepository.save(MealConfirmation.builder().tenant(rahulTenant).property(property).date(today).mealType(MealType.DINNER).isAttending(true).build());
 
-        // 7. Create Invoices and Payments for Current Month
+        mealConfirmationRepository.save(MealConfirmation.builder().tenant(rahulTenant2).property(property).date(today).mealType(MealType.BREAKFAST).isAttending(true).build());
+        mealConfirmationRepository.save(MealConfirmation.builder().tenant(rahulTenant2).property(property).date(today).mealType(MealType.LUNCH).isAttending(true).build());
+        mealConfirmationRepository.save(MealConfirmation.builder().tenant(rahulTenant2).property(property).date(today).mealType(MealType.DINNER).isAttending(true).build());
+
+        // 7. Create Invoices and Ledger Payments
         String curMonthStr = String.format("%d-%02d", today.getYear(), today.getMonthValue());
         RentInvoice rahulInvoice = RentInvoice.builder()
                 .property(property)
@@ -342,7 +459,7 @@ public class DataSeeder implements CommandLineRunner {
                 .dueDate(today.withDayOfMonth(5))
                 .status(RentStatus.PAID)
                 .paidAmount(new BigDecimal("9500.00"))
-                .paidDate(today.minusDays(10))
+                .paidDate(today.minusDays(8))
                 .build();
         rahulInvoice = rentInvoiceRepository.save(rahulInvoice);
 
@@ -355,9 +472,22 @@ public class DataSeeder implements CommandLineRunner {
                 .amount(new BigDecimal("9500.00"))
                 .paymentMethod(PaymentMethod.UPI)
                 .status(PaymentStatus.COMPLETED)
-                .paidAt(ZonedDateTime.now().minusDays(10))
+                .paidAt(ZonedDateTime.now().minusDays(8))
                 .build();
         paymentRepository.save(rahulPayment);
+
+        RentInvoice rahul2Invoice = RentInvoice.builder()
+                .property(property)
+                .tenant(rahulTenant2)
+                .invoiceNumber("INV-" + curMonthStr + "-205-01")
+                .monthYear(curMonthStr)
+                .amount(new BigDecimal("9500.00"))
+                .dueDate(today.withDayOfMonth(5))
+                .status(RentStatus.PAID)
+                .paidAmount(new BigDecimal("9500.00"))
+                .paidDate(today.minusDays(5))
+                .build();
+        rentInvoiceRepository.save(rahul2Invoice);
 
         RentInvoice kiranInvoice = RentInvoice.builder()
                 .property(property)
@@ -371,18 +501,18 @@ public class DataSeeder implements CommandLineRunner {
                 .build();
         rentInvoiceRepository.save(kiranInvoice);
 
-        // 8. Create Realistic Complaints
+        // 8. Create Realistic Maintenance Tickets & SLA Actions
         Complaint complaint1 = Complaint.builder()
                 .property(property)
                 .tenant(rahulTenant)
                 .room(room204)
                 .category(ComplaintCategory.PLUMBING)
-                .title("Bathroom tap is leaking continuously")
+                .title("Bathroom washbasin tap leaking")
                 .description("The main washbasin tap in room 204 bathroom does not turn off completely and is dripping water.")
                 .priority(ComplaintPriority.HIGH)
                 .status(ComplaintStatus.IN_PROGRESS)
-                .assignedTo("Mohan Plumber")
-                .resolutionNotes("Plumber has been called, scheduled to visit today at 3 PM.")
+                .assignedTo("Mohan (Plumber)")
+                .resolutionNotes("Mohan plumber notified via WhatsApp dispatch, visiting today at 3:30 PM.")
                 .build();
         complaintRepository.save(complaint1);
 
@@ -395,10 +525,26 @@ public class DataSeeder implements CommandLineRunner {
                 .description("Internet disconnects frequently during video calls in Bed B.")
                 .priority(ComplaintPriority.MEDIUM)
                 .status(ComplaintStatus.ACKNOWLEDGED)
+                .assignedTo("ACT Fibernet ISP Support")
+                .resolutionNotes("Mesh extender reboot scheduled.")
                 .build();
         complaintRepository.save(complaint2);
 
-        // 9. Create Join Applications
+        Complaint complaint3 = Complaint.builder()
+                .property(property)
+                .tenant(rahulTenant)
+                .room(room204)
+                .category(ComplaintCategory.ELECTRICITY)
+                .title("Geyser switch indicator light flickering")
+                .description("The power switch for geyser in bathroom 204 is loose.")
+                .priority(ComplaintPriority.LOW)
+                .status(ComplaintStatus.RESOLVED)
+                .assignedTo("Ramesh (Electrician)")
+                .resolutionNotes("Switch replaced with new 16A Anchor switch. Tested working.")
+                .build();
+        complaintRepository.save(complaint3);
+
+        // 9. Inbound QR Visitor Applications
         applicationRepository.save(TenantApplication.builder()
                 .property(property)
                 .name("Aditya Verma")
@@ -417,6 +563,7 @@ public class DataSeeder implements CommandLineRunner {
                 .property(property)
                 .name("Ganesh Hegde")
                 .phone("9833445566")
+                .email("ganesh.h@pes.edu")
                 .age(22)
                 .occupation("Graduate Student")
                 .companyOrCollege("PES University")
@@ -425,7 +572,20 @@ public class DataSeeder implements CommandLineRunner {
                 .status(ApplicationStatus.PENDING)
                 .build());
 
-        // 10. Create Announcements
+        applicationRepository.save(TenantApplication.builder()
+                .property(property)
+                .name("Sneha Rao")
+                .phone("9844112233")
+                .email("sneha.rao@infosys.com")
+                .age(25)
+                .occupation("Senior Analyst")
+                .companyOrCollege("Infosys Electronic City")
+                .preferredSharing(1)
+                .expectedJoiningDate(today.plusDays(10))
+                .status(ApplicationStatus.APPROVED)
+                .build());
+
+        // 10. Broadcast Announcements
         announcementRepository.save(Announcement.builder()
                 .property(property)
                 .title("Water Overhead Tank Cleaning Scheduled Tomorrow")
@@ -434,6 +594,14 @@ public class DataSeeder implements CommandLineRunner {
                 .isPinned(true)
                 .build());
 
-        log.info("Demo data seeding completed successfully! Sri Sai PG initialized with rooms, tenants, meals, complaints & invoices.");
+        announcementRepository.save(Announcement.builder()
+                .property(property)
+                .title("Sunday Special Biryani & Sweet Feast")
+                .message("Special lunch this Sunday: Chicken Dum Biryani / Paneer Makhani Biryani with Gulab Jamun served 12:30 - 2:30 PM.")
+                .targetAudience("ALL")
+                .isPinned(false)
+                .build());
+
+        log.info("Comprehensive Abode Tenancy SaaS demo data seeding completed successfully! Sri Sai PG initialized.");
     }
 }

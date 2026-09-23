@@ -14,3 +14,4 @@ public interface TenantApplicationRepository extends JpaRepository<TenantApplica
     List<TenantApplication> findByPropertyIdAndStatusOrderByCreatedAtDesc(UUID propertyId, ApplicationStatus status);
     long countByPropertyIdAndStatus(UUID propertyId, ApplicationStatus status);
 }
+

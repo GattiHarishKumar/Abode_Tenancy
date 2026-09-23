@@ -104,6 +104,8 @@ public class TenantDto {
         private LocalDate vacatingDate;
         private BigDecimal rentAmount;
         private BigDecimal depositAmount;
+        private BigDecimal totalOutstandingBalance;
+        private String upiId;
         private TenantStatus status;
         private String emergencyContactName;
         private String emergencyContactPhone;
@@ -149,6 +151,7 @@ public class TenantDto {
         private BigDecimal depositHeld;
         private BigDecimal totalDeductions;
         private BigDecimal netRefundAmount;
+        private BigDecimal shortfallAmount;
         private String settlementDate;
         private String status;
         private String notes;

@@ -25,3 +25,4 @@ public interface TenantRepository extends JpaRepository<Tenant, UUID> {
            "LOWER(t.room.roomNumber) LIKE LOWER(CONCAT('%', :query, '%')))")
     List<Tenant> searchTenants(@Param("propertyId") UUID propertyId, @Param("query") String query);
 }
+

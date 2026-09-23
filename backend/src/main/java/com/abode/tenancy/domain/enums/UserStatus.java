@@ -5,3 +5,4 @@ public enum UserStatus {
     INACTIVE,
     PENDING
 }
+

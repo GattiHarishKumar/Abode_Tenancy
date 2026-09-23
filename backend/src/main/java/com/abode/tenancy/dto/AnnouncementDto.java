@@ -47,3 +47,4 @@ public class AnnouncementDto {
         private ZonedDateTime createdAt;
     }
 }
+

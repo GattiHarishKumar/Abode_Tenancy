@@ -13,3 +13,4 @@ public interface MaintenanceTicketRepository extends JpaRepository<MaintenanceTi
     List<MaintenanceTicket> findByRoomIdOrderByCreatedAtDesc(UUID roomId);
     long countByPropertyIdAndStatusNot(UUID propertyId, String status);
 }
+

@@ -50,3 +50,4 @@ public class FoodRating {
     @CreationTimestamp
     private ZonedDateTime createdAt;
 }
+

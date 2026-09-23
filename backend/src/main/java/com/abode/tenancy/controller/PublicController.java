@@ -36,3 +36,4 @@ public class PublicController {
         return ResponseEntity.ok(ApiResponse.success("Join request submitted successfully. Application ID: " + app.getId()));
     }
 }
+

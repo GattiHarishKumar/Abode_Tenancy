@@ -8,3 +8,4 @@ public enum DocType {
     RECEIPT,
     OTHER
 }
+

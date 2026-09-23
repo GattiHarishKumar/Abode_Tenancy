@@ -234,6 +234,7 @@ export interface Tenant360 {
   // Aliases for convenience
   name?: string;
   totalOutstandingBalance?: number;
+  upiId?: string;
   companyOrCollege?: string;
   city?: string;
   idProofType?: string;

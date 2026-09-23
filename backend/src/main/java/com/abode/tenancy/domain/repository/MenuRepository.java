@@ -14,3 +14,4 @@ public interface MenuRepository extends JpaRepository<Menu, UUID> {
     Optional<Menu> findByPropertyIdAndMenuDate(UUID propertyId, LocalDate menuDate);
     List<Menu> findByPropertyIdAndMenuDateBetweenOrderByMenuDateAsc(UUID propertyId, LocalDate startDate, LocalDate endDate);
 }
+

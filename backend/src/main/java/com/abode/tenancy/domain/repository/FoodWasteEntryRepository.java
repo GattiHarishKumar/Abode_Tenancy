@@ -19,3 +19,4 @@ public interface FoodWasteEntryRepository extends JpaRepository<FoodWasteEntry, 
     @Query("SELECT SUM(w.leftoverKg) FROM FoodWasteEntry w WHERE w.property.id = :propertyId AND w.date BETWEEN :startDate AND :endDate")
     BigDecimal getTotalWasteForPeriod(@Param("propertyId") UUID propertyId, @Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
 }
+

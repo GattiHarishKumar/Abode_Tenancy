@@ -47,3 +47,4 @@ public class Referral {
     @CreationTimestamp
     private ZonedDateTime createdAt;
 }
+

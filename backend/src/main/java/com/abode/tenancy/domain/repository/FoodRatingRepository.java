@@ -21,3 +21,4 @@ public interface FoodRatingRepository extends JpaRepository<FoodRating, UUID> {
     @Query("SELECT AVG(f.rating) FROM FoodRating f WHERE f.property.id = :propertyId AND f.date = :date")
     Double getAverageRatingForDate(@Param("propertyId") UUID propertyId, @Param("date") LocalDate date);
 }
+

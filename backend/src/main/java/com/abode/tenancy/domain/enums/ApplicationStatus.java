@@ -6,3 +6,4 @@ public enum ApplicationStatus {
     REJECTED,
     ONBOARDED
 }
+

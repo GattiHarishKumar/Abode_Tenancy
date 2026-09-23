@@ -34,3 +34,4 @@ public class PropertyPricing {
 
     private String description;
 }
+

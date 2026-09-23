@@ -14,3 +14,4 @@ public interface StaffMemberRepository extends JpaRepository<StaffMember, UUID> 
     Optional<StaffMember> findByPropertyIdAndUserId(UUID propertyId, UUID userId);
     List<StaffMember> findByUserId(UUID userId);
 }
+

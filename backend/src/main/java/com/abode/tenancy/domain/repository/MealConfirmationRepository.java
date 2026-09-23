@@ -18,3 +18,4 @@ public interface MealConfirmationRepository extends JpaRepository<MealConfirmati
     List<MealConfirmation> findByPropertyIdAndDateAndMealType(UUID propertyId, LocalDate date, MealType mealType);
     long countByPropertyIdAndDateAndMealTypeAndIsAttending(UUID propertyId, LocalDate date, MealType mealType, Boolean isAttending);
 }
+

@@ -39,7 +39,7 @@ public class OperationsService {
         Property property = propertyRepository.findById(propertyId)
                 .orElseThrow(() -> new IllegalArgumentException("Property not found"));
 
-        LocalDate today = LocalDate.now();
+        LocalDate today = LocalDate.now(java.time.ZoneId.of("Asia/Kolkata"));
         String currentMonth = today.format(DateTimeFormatter.ofPattern("yyyy-MM"));
 
         // Key counts
@@ -179,7 +179,7 @@ public class OperationsService {
         Tenant tenant = tenantRepository.findById(tenantId)
                 .orElseThrow(() -> new IllegalArgumentException("Tenant not found"));
 
-        LocalDate today = LocalDate.now();
+        LocalDate today = LocalDate.now(java.time.ZoneId.of("Asia/Kolkata"));
         String currentMonth = today.format(DateTimeFormatter.ofPattern("yyyy-MM"));
 
         List<FoodDto.MealConfirmationItem> mealItems = foodService.getTenantConfirmations(tenantId, today);

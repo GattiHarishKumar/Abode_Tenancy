@@ -45,3 +45,4 @@ public class Notification {
     @CreationTimestamp
     private ZonedDateTime createdAt;
 }
+

@@ -45,3 +45,4 @@ public class Document {
     @CreationTimestamp
     private ZonedDateTime createdAt;
 }
+

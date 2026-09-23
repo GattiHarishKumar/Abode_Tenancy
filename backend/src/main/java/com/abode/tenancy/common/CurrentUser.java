@@ -10,3 +10,4 @@ import java.lang.annotation.*;
 @AuthenticationPrincipal
 public @interface CurrentUser {
 }
+

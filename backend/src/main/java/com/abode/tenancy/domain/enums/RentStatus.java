@@ -6,3 +6,4 @@ public enum RentStatus {
     OVERDUE,
     CANCELLED
 }
+

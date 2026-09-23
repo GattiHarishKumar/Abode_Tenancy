@@ -34,7 +34,8 @@ public class RentService {
                 .orElseThrow(() -> new IllegalArgumentException("Property not found"));
 
         List<Tenant> activeTenants = tenantRepository.findByPropertyIdAndStatus(request.getPropertyId(), TenantStatus.ACTIVE);
-        LocalDate dueDate = request.getDueDate() != null ? request.getDueDate() : LocalDate.now().withDayOfMonth(5);
+        LocalDate today = LocalDate.now(java.time.ZoneId.of("Asia/Kolkata"));
+        LocalDate dueDate = request.getDueDate() != null ? request.getDueDate() : today.withDayOfMonth(5);
 
         for (Tenant tenant : activeTenants) {
             Optional<RentInvoice> existing = rentInvoiceRepository.findByTenantIdAndMonthYear(tenant.getId(), request.getMonthYear());
@@ -73,8 +74,9 @@ public class RentService {
 
     @Transactional(readOnly = true)
     public RentDto.DashboardSummary getRentDashboard(UUID propertyId, String monthYear) {
+        LocalDate today = LocalDate.now(java.time.ZoneId.of("Asia/Kolkata"));
         if (monthYear == null || monthYear.trim().isEmpty()) {
-            monthYear = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM"));
+            monthYear = today.format(DateTimeFormatter.ofPattern("yyyy-MM"));
         }
 
         List<RentInvoice> invoices = rentInvoiceRepository.findByPropertyIdAndMonthYear(propertyId, monthYear);
@@ -215,7 +217,8 @@ public class RentService {
 
     @Transactional
     public RentInvoice addGuestMealCharge(RentDto.GuestMealChargeRequest request) {
-        String currentMonth = String.format("%d-%02d", LocalDate.now().getYear(), LocalDate.now().getMonthValue());
+        LocalDate today = LocalDate.now(java.time.ZoneId.of("Asia/Kolkata"));
+        String currentMonth = String.format("%d-%02d", today.getYear(), today.getMonthValue());
         Tenant tenant = tenantRepository.findById(request.getTenantId())
                 .orElseThrow(() -> new IllegalArgumentException("Tenant not found"));
 
@@ -230,7 +233,7 @@ public class RentService {
                             .monthYear(currentMonth)
                             .amount(tenant.getRentAmount())
                             .discountAmount(BigDecimal.ZERO)
-                            .dueDate(LocalDate.now().withDayOfMonth(5))
+                            .dueDate(today.withDayOfMonth(5))
                             .status(RentStatus.PENDING)
                             .paidAmount(BigDecimal.ZERO)
                             .build();

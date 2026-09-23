@@ -71,3 +71,4 @@ public class ApplicationDto {
         private String notes;
     }
 }
+

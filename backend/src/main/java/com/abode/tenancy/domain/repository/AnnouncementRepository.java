@@ -18,3 +18,4 @@ public interface AnnouncementRepository extends JpaRepository<Announcement, UUID
            "ORDER BY a.isPinned DESC, a.createdAt DESC")
     List<Announcement> findTargetedAnnouncements(@Param("propertyId") UUID propertyId, @Param("floorNumber") Integer floorNumber, @Param("roomId") UUID roomId);
 }
+

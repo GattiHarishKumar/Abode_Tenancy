@@ -51,7 +51,7 @@ public class FoodController {
     }
 
     @GetMapping("/confirmations/tenant/{tenantId}")
-    @PreAuthorize("hasAnyRole('TENANT', 'OWNER', 'SUPER_ADMIN')")
+    @PreAuthorize("@securityValidationService.isTenantOrAdmin(#tenantId, authentication)")
     @Operation(summary = "Get tenant meal confirmations for date")
     public ResponseEntity<ApiResponse<List<FoodDto.MealConfirmationItem>>> getTenantConfirmations(
             @PathVariable UUID tenantId,
@@ -62,7 +62,7 @@ public class FoodController {
     }
 
     @PostMapping("/confirmations/tenant/{tenantId}")
-    @PreAuthorize("hasRole('TENANT') or hasRole('OWNER')")
+    @PreAuthorize("@securityValidationService.isTenantOrAdmin(#tenantId, authentication)")
     @Operation(summary = "One-tap meal confirmation / cancellation (subject to cutoff)")
     public ResponseEntity<ApiResponse<MealConfirmation>> confirmMeal(
             @PathVariable UUID tenantId,
@@ -111,7 +111,7 @@ public class FoodController {
     }
 
     @PostMapping("/ratings/tenant/{tenantId}")
-    @PreAuthorize("hasRole('TENANT')")
+    @PreAuthorize("@securityValidationService.isTenantOrAdmin(#tenantId, authentication)")
     @Operation(summary = "Submit post-meal tenant rating and feedback")
     public ResponseEntity<ApiResponse<String>> submitFoodRating(
             @PathVariable UUID tenantId,
@@ -122,3 +122,4 @@ public class FoodController {
         return ResponseEntity.ok(ApiResponse.success("Thank you for your food feedback!"));
     }
 }
+

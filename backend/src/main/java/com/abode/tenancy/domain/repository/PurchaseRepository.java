@@ -13,3 +13,4 @@ public interface PurchaseRepository extends JpaRepository<Purchase, UUID> {
     List<Purchase> findByPropertyIdOrderByPurchaseDateDesc(UUID propertyId);
     List<Purchase> findByPropertyIdAndPurchaseDateBetween(UUID propertyId, LocalDate start, LocalDate end);
 }
+

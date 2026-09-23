@@ -26,7 +26,7 @@ public class ComplaintController {
     private final ComplaintService complaintService;
 
     @PostMapping("/tenant/{tenantId}")
-    @PreAuthorize("hasRole('TENANT') or hasRole('OWNER')")
+    @PreAuthorize("@securityValidationService.isTenantOrAdmin(#tenantId, authentication)")
     @Operation(summary = "Raise a new complaint / issue")
     public ResponseEntity<ApiResponse<Complaint>> raiseComplaint(
             @PathVariable UUID tenantId,
@@ -44,7 +44,7 @@ public class ComplaintController {
     }
 
     @GetMapping("/tenant/{tenantId}")
-    @PreAuthorize("hasAnyRole('TENANT', 'OWNER', 'SUPER_ADMIN')")
+    @PreAuthorize("@securityValidationService.isTenantOrAdmin(#tenantId, authentication)")
     @Operation(summary = "Get all complaints raised by a tenant")
     public ResponseEntity<ApiResponse<List<ComplaintDto.Summary>>> getTenantComplaints(@PathVariable UUID tenantId) {
         List<ComplaintDto.Summary> complaints = complaintService.getComplaintsForTenant(tenantId);
@@ -62,3 +62,4 @@ public class ComplaintController {
         return ResponseEntity.ok(ApiResponse.success("Complaint status updated to " + request.getStatus(), complaint));
     }
 }
+

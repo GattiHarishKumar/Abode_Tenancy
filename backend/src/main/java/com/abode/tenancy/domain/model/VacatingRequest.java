@@ -71,3 +71,4 @@ public class VacatingRequest {
     @UpdateTimestamp
     private ZonedDateTime updatedAt;
 }
+

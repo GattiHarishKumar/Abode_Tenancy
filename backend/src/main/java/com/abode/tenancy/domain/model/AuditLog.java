@@ -44,3 +44,4 @@ public class AuditLog {
     @CreationTimestamp
     private ZonedDateTime createdAt;
 }
+

@@ -10,3 +10,4 @@ public enum ComplaintCategory {
     BATHROOM,
     OTHER
 }
+

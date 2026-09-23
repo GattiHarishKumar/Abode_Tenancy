@@ -40,3 +40,4 @@ public class StaffMember {
     @CreationTimestamp
     private ZonedDateTime createdAt;
 }
+

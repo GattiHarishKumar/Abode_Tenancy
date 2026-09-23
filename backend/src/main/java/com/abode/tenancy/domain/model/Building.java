@@ -28,3 +28,4 @@ public class Building {
     @Builder.Default
     private Integer totalFloors = 1;
 }
+

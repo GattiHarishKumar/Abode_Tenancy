@@ -66,9 +66,17 @@ export const TenantRentPage: React.FC = () => {
     );
   }
 
-  const outstanding = profile?.totalOutstandingBalance || 0;
-  const upiId = 'harish.pg@okhdfcbank';
-  const upiUri = `upi://pay?pa=${upiId}&pn=Sri%20Sai%20PG&am=${outstanding}&cu=INR`;
+  const calculatedOutstanding = profile?.recentInvoices
+    ? profile.recentInvoices
+        .filter(inv => inv.status !== 'PAID')
+        .reduce((acc, inv) => acc + (inv.amount - (inv.paidAmount || 0)), 0)
+    : 0;
+  const outstanding = profile?.totalOutstandingBalance !== undefined 
+    ? profile.totalOutstandingBalance 
+    : calculatedOutstanding;
+  const upiId = profile?.upiId || 'srisaipg@okhdfcbank';
+  const propertyName = profile?.propertyName || 'Sri Sai PG';
+  const upiUri = `upi://pay?pa=${encodeURIComponent(upiId)}&pn=${encodeURIComponent(propertyName)}&am=${outstanding}&cu=INR`;
 
   const copyUpiId = () => {
     navigator.clipboard.writeText(upiId);

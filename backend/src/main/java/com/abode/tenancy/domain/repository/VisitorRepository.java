@@ -14,3 +14,4 @@ public interface VisitorRepository extends JpaRepository<Visitor, UUID> {
     List<Visitor> findByPropertyIdAndArrivalTimeBetween(UUID propertyId, ZonedDateTime start, ZonedDateTime end);
     List<Visitor> findByTenantIdOrderByArrivalTimeDesc(UUID tenantId);
 }
+

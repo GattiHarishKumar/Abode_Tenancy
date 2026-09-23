@@ -11,3 +11,4 @@ import java.util.UUID;
 public interface InventoryItemRepository extends JpaRepository<InventoryItem, UUID> {
     List<InventoryItem> findByPropertyIdOrderByItemNameAsc(UUID propertyId);
 }
+

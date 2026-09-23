@@ -48,3 +48,4 @@ public class MealConfirmation {
     @UpdateTimestamp
     private ZonedDateTime updatedAt;
 }
+

@@ -65,3 +65,4 @@ public class Menu {
     @UpdateTimestamp
     private ZonedDateTime updatedAt;
 }
+

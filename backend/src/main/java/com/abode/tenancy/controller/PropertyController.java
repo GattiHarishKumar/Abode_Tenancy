@@ -50,3 +50,4 @@ public class PropertyController {
         return ResponseEntity.ok(ApiResponse.success("Property created successfully", property));
     }
 }
+

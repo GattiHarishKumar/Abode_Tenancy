@@ -11,3 +11,4 @@ import java.util.UUID;
 public interface MealPreferenceRepository extends JpaRepository<MealPreference, UUID> {
     Optional<MealPreference> findByTenantId(UUID tenantId);
 }
+

@@ -31,3 +31,4 @@ public class PropertyFaq {
     @Builder.Default
     private Integer sortOrder = 0;
 }
+

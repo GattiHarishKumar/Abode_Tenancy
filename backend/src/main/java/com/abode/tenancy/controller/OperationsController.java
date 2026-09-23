@@ -38,3 +38,4 @@ public class OperationsController {
         return ResponseEntity.ok(ApiResponse.success(dayView));
     }
 }
+

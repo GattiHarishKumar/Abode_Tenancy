@@ -12,3 +12,4 @@ public interface AuditLogRepository extends JpaRepository<AuditLog, UUID> {
     List<AuditLog> findByPropertyIdOrderByCreatedAtDesc(UUID propertyId);
     List<AuditLog> findByUserIdOrderByCreatedAtDesc(UUID userId);
 }
+

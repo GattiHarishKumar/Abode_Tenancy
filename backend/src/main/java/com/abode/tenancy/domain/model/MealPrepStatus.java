@@ -49,3 +49,4 @@ public class MealPrepStatus {
     @UpdateTimestamp
     private ZonedDateTime updatedAt;
 }
+
