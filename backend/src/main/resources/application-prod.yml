@@ -41,6 +41,11 @@ storage:
   local:
     base-path: /tmp/uploads
 
+management:
+  health:
+    redis:
+      enabled: false
+
 logging:
   level:
     root: INFO
