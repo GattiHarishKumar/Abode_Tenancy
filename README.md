@@ -34,6 +34,10 @@ Managing paying guest (PG) accommodations, hostels, and shared living communitie
 
 ---
 
+## Live Link
+https://frontend-ten-woad-35.vercel.app/login
+
+
 ## 🏗️ Architecture
 
 Abode Tenancy is built as a **Modular Monolith** in Java 21 / Spring Boot 3 paired with a modern React TypeScript frontend.
