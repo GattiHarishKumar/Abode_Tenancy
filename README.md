@@ -37,6 +37,7 @@ Managing paying guest (PG) accommodations, hostels, and shared living communitie
 ## Live Link
 https://frontend-ten-woad-35.vercel.app/login
 
+---
 
 ## 🏗️ Architecture
 
